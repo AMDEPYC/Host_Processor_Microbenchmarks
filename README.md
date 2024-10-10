@@ -17,6 +17,7 @@ mkdir build
 cd build
 cmake ..
 make
+```
 
 ## Running the Benchmarks
 To run the benchmarks, navigate to the `codes` directory and use the `run.sh` script provided.
@@ -24,3 +25,4 @@ To run the benchmarks, navigate to the `codes` directory and use the `run.sh` sc
 ```bash
 cd codes/
 ./run.sh
+```
