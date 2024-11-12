@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <mpi.h>
 
 // make sure
 
@@ -12,13 +13,20 @@ __device__ int get_global_index(void) {
 // kernel1 returns the result of calling the __device__ function
 // return_constant():
 
-__global__ void kernel1(int *array) {
+__global__ void kernel1(int *array,int size) {
   int index = get_global_index();
-  array[index] = 1.0;
+  if(index<size)
+  {
+    array[index] = 1;
+  }
+}
+
+
+__global__ void kernel_void() {
 }
 
 int launch(void) {
-  int num_elements = 1 << 28;
+  int num_elements = 1 << 7;
   std::cout << " number of elements " << num_elements << std::endl;
   int num_bytes = num_elements * sizeof(int);
   int *device_array = NULL;
@@ -42,15 +50,22 @@ int launch(void) {
 
   int block_size = 1024;
 
-  int grid_size = (block_size / 1024) + 1;
+  int grid_size = (num_elements/block_size ) + 1;
 
   // launch each kernel and print out the results
-  for (int i = 0; i < 100000000; i++) {
-    kernel1<<<grid_size, block_size>>>(device_array);
+  for (int i = 0; i < 1000; i++) {
+  //for (int i = 0; i < 10000; i++) {
+   // kernel1<<<grid_size, block_size>>>(device_array,num_elements);
+    kernel_void<<<grid_size, block_size>>>();
   }
   // this impliciltt does deviceSyc for single stream
-  cudaMemcpy(host_array, device_array, num_bytes, cudaMemcpyDeviceToHost);
-
+  //cudaMemcpy(host_array, device_array, num_bytes, cudaMemcpyDeviceToHost);
+  
+/*  MPI_Barrier(MPI_COMM_WORLD);
+  double t1 = MPI_Wtime();
+  
+ printf("%16.16lf\n",t1);
+ */
   // printf("kernel1 results:\n");
 
   // deallocate memory
