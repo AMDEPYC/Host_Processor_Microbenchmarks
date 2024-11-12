@@ -23,15 +23,14 @@ int main(int args, char *argsv[]) {
   double t0 = MPI_Wtime();
   if (nexamples > 0) {
     if (rank == 0) {
-      std::cout << " solving launch" << std::endl;
+      std::cout << " solving launch start time " <<std::endl;
     }
 
     launch();
   }
-  cudaDeviceSynchronize();
   MPI_Barrier(MPI_COMM_WORLD);
   double t1 = MPI_Wtime();
-
+  cudaDeviceSynchronize();
   if (nexamples > 1) {
     if (rank == 0) {
       std::cout << " solving memcopy" << std::endl;
@@ -46,7 +45,7 @@ int main(int args, char *argsv[]) {
 
   if (rank == 0) {
     std::cout << " ******************************************* " << std::endl;
-    std::cout << " kernal launch " << t1 - t0 << std::endl;
+    std::cout << " kernel launch " << (t1 - t0)*1000<< " mico seconds " << std::endl;
     std::cout << " memcopy " << t2 - t1 << std::endl;
     std::cout << " ******************************************* " << std::endl;
   }
